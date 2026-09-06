@@ -1,0 +1,14 @@
+generator client {
+ provider = "prisma-client"
+ output = "../src/generated/prisma"
+}
+datasource db {
+ provider = "postgresql"
+}
+// Foundation only. Authentication and domain models belong to subsequent stages.
+model User {
+ id String @id @default(cuid())
+ email String @unique
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+}
