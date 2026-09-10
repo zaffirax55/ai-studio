@@ -325,6 +325,13 @@ input:focus-visible {
 .asset-grid figcaption { display: flex; justify-content: space-between; gap: 8px; padding: 8px 10px; color: var(--muted); font-size: 12px; }
 .asset-grid figcaption > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .asset-delete { border: 0; background: transparent; color: #a2262d; padding: 0; font: inherit; font-size: 12px; cursor: pointer; }
+.concept-section { margin-top: 34px; padding-top: 26px; border-top: 1px solid #d7deea; }
+.concept-section .section-heading { align-items: end; }
+.concept-section h2 { margin-bottom: 4px; }
+.concept-card { margin-top: 18px; padding: 20px; background: #f8faff; border: 1px solid #d7deea; border-radius: 8px; }
+.concept-card h3 { margin: 0 0 12px; font-size: 18px; }
+.concept-card p { white-space: pre-line; margin: 0 0 14px; }
+.concept-card small { color: var(--muted); }
 .empty-state h3 {
   margin: 0 0 8px;
   font-size: 20px;

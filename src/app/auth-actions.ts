@@ -158,3 +158,16 @@ export async function saveProjectBrief(formData: FormData) {
   await getDb().project.updateMany({ where: { id, userId: user.id }, data });
   redirect(`/dashboard/${id}`);
 }
+
+export async function generateProjectConcept(formData: FormData) {
+  const id = formData.get("projectId");
+  const user = await getCurrentUser();
+  if (!user || typeof id !== "string") redirect("/dashboard");
+  const project = await getDb().project.findFirst({ where: { id, userId: user.id }, select: { id: true, name: true, description: true, audience: true, style: true } });
+  if (!project) redirect("/dashboard");
+  const focus = project.description || `продукта «${project.name}»`;
+  const audience = project.audience || "людей, которым важны качество и понятная подача";
+  const style = project.style || "чистый современный стиль";
+  await getDb().projectConcept.create({ data: { projectId: project.id, title: `Концепция: ${project.name}`, description: `Визуальная концепция для ${focus}.\n\nАудитория: ${audience}.\n\nНаправление: ${style}.\n\nРекомендация: использовать загруженные фотографии как основу для серии материалов с единым светом, спокойной композицией и акцентом на детали продукта.` } });
+  redirect(`/dashboard/${project.id}`);
+}
