@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { deleteProject, renameProject, uploadProjectAsset, logout } from "@/app/auth-actions";
+import { deleteProject, renameProject, uploadProjectAsset, deleteProjectAsset, logout } from "@/app/auth-actions";
 import { getDb } from "@/shared/db/client";
 import { requireUser } from "@/shared/auth/session";
 
@@ -39,7 +39,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
               <button className="button" type="submit">Загрузить фото</button>
               <p className="field-hint">PNG, JPG или WEBP, до 10 МБ.</p>
             </form>
-            {project.assets.length > 0 && <div className="asset-grid">{project.assets.map((asset) => <figure key={asset.id}><img src={`/uploads/${user.id}/${project.id}/${asset.fileName}`} alt={asset.originalName} /><figcaption>{asset.originalName}</figcaption></figure>)}</div>}
+            {project.assets.length > 0 && <div className="asset-grid">{project.assets.map((asset) => <figure key={asset.id}><a href={`/uploads/${user.id}/${project.id}/${asset.fileName}`} target="_blank" rel="noreferrer"><img src={`/uploads/${user.id}/${project.id}/${asset.fileName}`} alt={asset.originalName} /></a><figcaption><span>{asset.originalName}</span><form action={deleteProjectAsset}><input type="hidden" name="assetId" value={asset.id} /><button className="asset-delete" type="submit">Удалить</button></form></figcaption></figure>)}</div>}
           </div>
         </section>
       </section>

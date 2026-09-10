@@ -318,7 +318,9 @@ input:focus-visible {
 .asset-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; margin-top: 24px; }
 .asset-grid figure { margin: 0; overflow: hidden; border: 1px solid #d7deea; border-radius: 8px; background: white; }
 .asset-grid img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; }
-.asset-grid figcaption { overflow: hidden; padding: 8px 10px; color: var(--muted); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+.asset-grid figcaption { display: flex; justify-content: space-between; gap: 8px; padding: 8px 10px; color: var(--muted); font-size: 12px; }
+.asset-grid figcaption > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.asset-delete { border: 0; background: transparent; color: #a2262d; padding: 0; font: inherit; font-size: 12px; cursor: pointer; }
 .empty-state h3 {
   margin: 0 0 8px;
   font-size: 20px;

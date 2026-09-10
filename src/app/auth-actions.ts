@@ -13,6 +13,7 @@ import { allowAuthAttempt } from "@/shared/auth/rate-limit";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
+import { unlink } from "node:fs/promises";
 
 async function authenticate(
   formData: FormData,
@@ -127,4 +128,19 @@ export async function uploadProjectAsset(formData: FormData) {
   await writeFile(path.join(uploadDir, fileName), Buffer.from(await file.arrayBuffer()));
   await getDb().projectAsset.create({ data: { projectId: project.id, originalName: file.name.slice(0, 255), fileName, mimeType: file.type, sizeBytes: file.size } });
   redirect(`/dashboard/${project.id}`);
+}
+
+export async function deleteProjectAsset(formData: FormData) {
+  const assetId = formData.get("assetId");
+  const user = await getCurrentUser();
+  if (!user || typeof assetId !== "string") redirect("/dashboard");
+  const asset = await getDb().projectAsset.findFirst({
+    where: { id: assetId, project: { userId: user.id } },
+    select: { id: true, fileName: true, projectId: true, project: { select: { id: true } } },
+  });
+  if (!asset) redirect("/dashboard");
+  const filePath = path.join(process.cwd(), "public", "uploads", user.id, asset.projectId, asset.fileName);
+  await unlink(filePath).catch(() => undefined);
+  await getDb().projectAsset.delete({ where: { id: asset.id } });
+  redirect(`/dashboard/${asset.project.id}`);
 }
