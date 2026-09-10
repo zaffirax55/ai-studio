@@ -8,7 +8,13 @@ export default function Home() {
           {ru.brand}
           <span> / studio</span>
         </Link>
-        <span className="badge">{ru.stage}</span>
+        <nav className="auth-nav" aria-label="Аккаунт">
+          <Link href="/login">Войти</Link>
+          <Link className="button" href="/register">
+            Создать аккаунт
+          </Link>
+          <Link href="/dashboard">Кабинет</Link>
+        </nav>
       </header>
       <section className="workspace" aria-labelledby="studio-title">
         <p className="eyebrow">{ru.eyebrow}</p>

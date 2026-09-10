@@ -9,8 +9,10 @@ async function main() {
   });
   try {
     await db.$queryRaw`SELECT 1`;
-    await db.user.count();
-    console.log("PostgreSQL connection and initial migration: OK");
+    await db.user.findFirst({ select: { passwordHash: true } });
+    await db.session.count();
+    await db.authAttempt.count();
+    console.log("PostgreSQL connection and authentication migration: OK");
   } finally {
     await db.$disconnect();
   }

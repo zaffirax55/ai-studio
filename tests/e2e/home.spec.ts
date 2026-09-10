@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-test("stage 0 page is accessible and fits the viewport", async ({ page }) => {
+test("home page is accessible and fits the viewport", async ({ page }) => {
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
   page.on("console", (message) => {
@@ -12,7 +12,7 @@ test("stage 0 page is accessible and fits the viewport", async ({ page }) => {
     "Ваш товар. В лучшем свете.",
   );
   await expect(page.getByRole("status")).toContainText(
-    "Регистрация, загрузка фотографий и генерация появятся",
+    "Регистрация и личный кабинет уже доступны",
   );
   await expect(page.locator("html")).toHaveAttribute("lang", "ru");
   await page.keyboard.press("Tab");
