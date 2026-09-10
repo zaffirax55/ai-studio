@@ -10,6 +10,9 @@ import {
   getCurrentUser,
 } from "@/shared/auth/session";
 import { allowAuthAttempt } from "@/shared/auth/rate-limit";
+import { mkdir, writeFile } from "node:fs/promises";
+import path from "node:path";
+import { randomUUID } from "node:crypto";
 
 async function authenticate(
   formData: FormData,
@@ -107,4 +110,21 @@ export async function deleteProject(formData: FormData) {
   if (!user || typeof id !== "string") redirect("/dashboard");
   await getDb().project.deleteMany({ where: { id, userId: user.id } });
   redirect("/dashboard");
+}
+
+export async function uploadProjectAsset(formData: FormData) {
+  const id = formData.get("projectId");
+  const file = formData.get("file");
+  const user = await getCurrentUser();
+  if (!user || typeof id !== "string" || !(file instanceof File)) return;
+  if (!file.type.startsWith("image/") || file.size === 0 || file.size > 10 * 1024 * 1024) return;
+  const project = await getDb().project.findFirst({ where: { id, userId: user.id }, select: { id: true } });
+  if (!project) return;
+  const extension = path.extname(file.name).toLowerCase().replace(/[^a-z0-9.]/g, "") || ".bin";
+  const fileName = `${randomUUID()}${extension}`;
+  const uploadDir = path.join(process.cwd(), "public", "uploads", user.id, project.id);
+  await mkdir(uploadDir, { recursive: true });
+  await writeFile(path.join(uploadDir, fileName), Buffer.from(await file.arrayBuffer()));
+  await getDb().projectAsset.create({ data: { projectId: project.id, originalName: file.name.slice(0, 255), fileName, mimeType: file.type, sizeBytes: file.size } });
+  redirect(`/dashboard/${project.id}`);
 }
