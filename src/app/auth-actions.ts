@@ -144,3 +144,17 @@ export async function deleteProjectAsset(formData: FormData) {
   await getDb().projectAsset.delete({ where: { id: asset.id } });
   redirect(`/dashboard/${asset.project.id}`);
 }
+
+export async function saveProjectBrief(formData: FormData) {
+  const id = formData.get("projectId");
+  const user = await getCurrentUser();
+  if (!user || typeof id !== "string") redirect("/dashboard");
+  const values = {
+    description: formData.get("description"),
+    audience: formData.get("audience"),
+    style: formData.get("style"),
+  };
+  const data = Object.fromEntries(Object.entries(values).map(([key, value]) => [key, typeof value === "string" ? value.trim().slice(0, 1000) || null : null]));
+  await getDb().project.updateMany({ where: { id, userId: user.id }, data });
+  redirect(`/dashboard/${id}`);
+}

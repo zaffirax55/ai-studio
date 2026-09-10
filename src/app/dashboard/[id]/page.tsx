@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { deleteProject, renameProject, uploadProjectAsset, deleteProjectAsset, logout } from "@/app/auth-actions";
+import { deleteProject, renameProject, uploadProjectAsset, deleteProjectAsset, saveProjectBrief, logout } from "@/app/auth-actions";
 import { getDb } from "@/shared/db/client";
 import { requireUser } from "@/shared/auth/session";
 
@@ -32,6 +32,14 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
             <form action={deleteProject}><input type="hidden" name="id" value={project.id} /><button className="button danger" type="submit">Удалить проект</button></form>
           </div>
           <div className="asset-section">
+            <h2>Бриф проекта</h2>
+            <form className="brief-form" action={saveProjectBrief}>
+              <input type="hidden" name="projectId" value={project.id} />
+              <label htmlFor="description">Что создаём?</label><textarea id="description" name="description" defaultValue={project.description ?? ""} maxLength={1000} placeholder="Например: предметные фотографии керамических ваз" />
+              <label htmlFor="audience">Для кого?</label><input id="audience" name="audience" defaultValue={project.audience ?? ""} maxLength={1000} placeholder="Например: владельцы уютных квартир" />
+              <label htmlFor="style">Желаемый стиль</label><input id="style" name="style" defaultValue={project.style ?? ""} maxLength={1000} placeholder="Например: тёплый минимализм" />
+              <button className="button" type="submit">Сохранить бриф</button>
+            </form>
             <h2>Фотографии проекта</h2>
             <form className="upload-form" action={uploadProjectAsset}>
               <input type="hidden" name="projectId" value={project.id} />
