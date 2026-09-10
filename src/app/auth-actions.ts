@@ -89,3 +89,22 @@ export async function createProject(formData: FormData) {
   await getDb().project.create({ data: { name, userId: user.id } });
   redirect("/dashboard");
 }
+
+export async function renameProject(formData: FormData) {
+  const id = formData.get("id");
+  const rawName = formData.get("name");
+  const name = typeof rawName === "string" ? rawName.trim() : "";
+  const user = await getCurrentUser();
+  if (!user || typeof id !== "string" || name.length < 2 || name.length > 80)
+    return;
+  await getDb().project.updateMany({ where: { id, userId: user.id }, data: { name } });
+  redirect(`/dashboard/${id}`);
+}
+
+export async function deleteProject(formData: FormData) {
+  const id = formData.get("id");
+  const user = await getCurrentUser();
+  if (!user || typeof id !== "string") redirect("/dashboard");
+  await getDb().project.deleteMany({ where: { id, userId: user.id } });
+  redirect("/dashboard");
+}

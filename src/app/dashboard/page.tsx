@@ -55,7 +55,7 @@ export default async function Dashboard() {
               {projects.map((project) => (
                 <li key={project.id}>
                   <div>
-                    <strong>{project.name}</strong>
+                    <Link href={`/dashboard/${project.id}`}><strong>{project.name}</strong></Link>
                     <span>
                       Создан{" "}
                       {new Intl.DateTimeFormat("ru-RU", {
